@@ -4,7 +4,7 @@ const SQUARE_WIDTH = 101;
 const SQUARE_HEIGHT = 83;
 const PLAYER_START_X = SQUARE_WIDTH*4;
 const PLAYER_START_Y = SQUARE_HEIGHT-23;
-const CHAR_WIDTH = 60;
+const CHAR_WIDTH = 67;
 const ROCK_WIDTH = 86;
 const MAXSPEED = 2;
 
@@ -12,6 +12,7 @@ let rightKey;
 let leftKey;
 let xSpeed = 0;
 let xSpeedInc = 0;
+let maxSpeedInc = 8;
 let xMove = 0;
 
 let firstSquare = [1,143];
@@ -55,46 +56,85 @@ class Player extends Objects{
     this.y = this.y + 83*direction;
   }
 
-  update(dt){
-
+  moveRight(){
     if (rightKey){
       xSpeedInc--;
-      if (xSpeedInc == -15)
+      if (xSpeedInc == -maxSpeedInc)
         xSpeed--;
     }
-
-    if (leftKey){
-      xSpeedInc++;
-      if (xSpeedInc == 15)
-        xSpeed++;
-    }
-
-    if (xSpeed > MAXSPEED)
-      xSpeed = MAXSPEED;
 
     if (xSpeed < -MAXSPEED)
       xSpeed = -MAXSPEED;
 
-    if (!leftKey && !rightKey){
-      xMove = 0;
-      xSpeed = 0;
-      xSpeedInc = 0;
-    }else{
-      xMove -= xSpeed;
-    }
-
-    if (this.x < 0){
-      xMove = 0;
-      xSpeed = 0;
-      xSpeedInc = 0;
-      this.x = 1;
-    } else if (this.x > CANVAS_WIDTH-(SQUARE_WIDTH)) {
+    if (this.x > CANVAS_WIDTH-(SQUARE_WIDTH)) {
       xMove = 0;
       xSpeed = 0;
       xSpeedInc = 0;
       this.x = CANVAS_WIDTH - SQUARE_WIDTH - 1;
     } else{
       this.x = this.x + xMove;
+    }
+
+    for (let rock = 0; rock < allRocks.length; rock++){
+      if (this.x < allRocks[rock].x + ROCK_WIDTH &&
+          this.x + CHAR_WIDTH > allRocks[rock].x &&
+          this.y < allRocks[rock].y + SQUARE_HEIGHT &&
+          this.y + SQUARE_HEIGHT > allRocks[rock].y){
+            xMove = 0;
+            xSpeed = 0;
+            xSpeedInc = 0;
+            this.x = allRocks[rock].x - CHAR_WIDTH;
+          }
+
+        }
+        console.log('moveRight');
+  }
+
+
+  moveLeft(){
+     if (leftKey) {
+      xSpeedInc++;
+      if (xSpeedInc ==maxSpeedInc)
+        xSpeed++;
+    }
+    if (xSpeed > MAXSPEED)
+      xSpeed = MAXSPEED;
+
+    if (this.x < 0){
+      xMove = 0;
+      xSpeed = 0;
+      xSpeedInc = 0;
+      this.x = 1;
+    } else{
+      this.x = this.x + xMove;
+    }
+
+    for (let rock = 0; rock < allRocks.length; rock++){
+      if (this.x < allRocks[rock].x + ROCK_WIDTH &&
+          this.x + CHAR_WIDTH > allRocks[rock].x &&
+          this.y < allRocks[rock].y + SQUARE_HEIGHT &&
+          this.y + SQUARE_HEIGHT > allRocks[rock].y){
+            xMove = 0;
+            xSpeed = 0;
+            xSpeedInc = 0;
+            this.x = allRocks[rock].x + CHAR_WIDTH;
+          }
+    }
+    console.log('moveLeft');
+  }
+
+  update(dt){
+
+    this.moveLeft();
+
+    this.moveRight();
+
+    if (!rightKey && !leftKey){
+      xMove = 0;
+      xSpeed = 0;
+      xSpeedInc = 0;
+    }else{
+      xMove -= xSpeed;
     }
 
     if (this.y > 550){
@@ -104,7 +144,7 @@ class Player extends Objects{
         this.y = PLAYER_START_Y;
         createGameElements(stage);
       } else{
-        ctx.text("You Won!");
+        ctx.fillText("You Won!");
       }
     }
 
