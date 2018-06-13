@@ -11,7 +11,9 @@ const MAX_SPEED = 2;
 const ORANGE_GEM_POINT = 10;
 const BLUE_GEM_POINT = 50;
 const GREEN_GEM_POINT = 100;
+const TEXT_TIME_START = 150
 
+let gamePlay = true;
 let rightKey;
 let leftKey;
 let xSpeed = 0;
@@ -22,6 +24,8 @@ let gemPoint;
 let time = 0;
 let score = 0;
 let lives = 5;
+let canvasText;
+let textColorChanger = 5;
 
 let firstSquare = [1,143];
 let roadSquares = [];
@@ -56,6 +60,41 @@ class Objects {
 
 }
 
+class CanvasText {
+  constructor(x, y, text, time){
+    this.x = x;
+    this.y = y;
+    this.text = text;
+    this.time = TEXT_TIME_START;
+  }
+
+  render(){
+    ctx.font="50px verdana";
+    if (textColorChanger % 2 == 0){
+      ctx.fillStyle= "gold"
+    } else{
+      ctx.fillStyle= "slateblue"
+    }
+    ctx.strokeStyle="firebrick"
+    ctx.lineWidth = 2;
+    let textX = this.x;
+    let textY = this.y;
+    ctx.fillText(this.text,textX, textY);
+    ctx.strokeText(this.text,textX, textY);
+  }
+
+  update(dt){
+      this.y = this.y - dt*10;
+      this.time = this.time - 1;
+      if (this.time % 10 == 0){
+        textColorChanger --;
+      }
+      if (this.time == 0 && gamePlay){
+        canvasText = undefined;
+      }
+    }
+}
+
 // Classe representando o personagem do jogador
 class Player extends Objects{
 
@@ -67,65 +106,37 @@ class Player extends Objects{
   }
 
   moveUpAndDown(direction){
-    let pastThisY = this.y;
-    this.y = this.y + SQUARE_HEIGHT*direction;
-    for (let rock = 0; rock < allRocks.length; rock++){
-      if (this.x < allRocks[rock].x + ROCK_WIDTH &&
-        this.x + CHAR_WIDTH > allRocks[rock].x &&
-        this.y < allRocks[rock].y + SQUARE_HEIGHT &&
-        this.y + SQUARE_HEIGHT > allRocks[rock].y){
-          this.y = pastThisY;
+    if (gamePlay){
+      let pastThisY = this.y;
+      this.y = this.y + SQUARE_HEIGHT*direction;
+      for (let rock = 0; rock < allRocks.length; rock++){
+        if (this.x < allRocks[rock].x + ROCK_WIDTH &&
+          this.x + CHAR_WIDTH > allRocks[rock].x &&
+          this.y < allRocks[rock].y + SQUARE_HEIGHT &&
+          this.y + SQUARE_HEIGHT > allRocks[rock].y){
+            this.y = pastThisY;
+          }
         }
-      }
+    }
+
   }
 
   moveRight(){
-    if (rightKey){
-      xSpeedInc--;
-      if (xSpeedInc == -maxSpeedInc)
-      xSpeed--;
-    }
-
-    if (xSpeed < -MAX_SPEED)
-    xSpeed = -MAX_SPEED;
-
-    if (this.x > (CANVAS_WIDTH-SQUARE_WIDTH)) {
-      xMove = 0;
-      xSpeed = 0;
-      xSpeedInc = 0;
-      this.x = CANVAS_WIDTH - SQUARE_WIDTH - 1;
-    } else{
-      this.x = this.x + xMove;
-    }
-
-    for (let rock = 0; rock < allRocks.length; rock++){
-      if (this.x < allRocks[rock].x + ROCK_WIDTH &&
-        this.x + CHAR_WIDTH > allRocks[rock].x &&
-        this.y < allRocks[rock].y + SQUARE_HEIGHT &&
-        this.y + SQUARE_HEIGHT > allRocks[rock].y &&
-        xSpeed < 0){
-          xMove = 0;
-          xSpeed = 0;
-          xSpeedInc = 0;
-          this.x = allRocks[rock].x - CHAR_WIDTH;
-        }
+    if(gamePlay){
+      if (rightKey){
+        xSpeedInc--;
+        if (xSpeedInc == -maxSpeedInc)
+        xSpeed--;
       }
-    }
 
-    moveLeft(){
-      if (leftKey) {
-        xSpeedInc++;
-        if (xSpeedInc ==maxSpeedInc)
-        xSpeed++;
-      }
-      if (xSpeed > MAX_SPEED)
-      xSpeed = MAX_SPEED;
+      if (xSpeed < -MAX_SPEED)
+      xSpeed = -MAX_SPEED;
 
-      if (this.x < 0){
+      if (this.x > (CANVAS_WIDTH-SQUARE_WIDTH)) {
         xMove = 0;
         xSpeed = 0;
         xSpeedInc = 0;
-        this.x = 1;
+        this.x = CANVAS_WIDTH - SQUARE_WIDTH - 1;
       } else{
         this.x = this.x + xMove;
       }
@@ -135,13 +146,50 @@ class Player extends Objects{
           this.x + CHAR_WIDTH > allRocks[rock].x &&
           this.y < allRocks[rock].y + SQUARE_HEIGHT &&
           this.y + SQUARE_HEIGHT > allRocks[rock].y &&
-          xSpeed > 0){
+          xSpeed < 0){
             xMove = 0;
             xSpeed = 0;
             xSpeedInc = 0;
-            this.x = allRocks[rock].x + ROCK_WIDTH ;
+            this.x = allRocks[rock].x - CHAR_WIDTH;
           }
         }
+    }
+
+    }
+
+    moveLeft(){
+      if (gamePlay){
+        if (leftKey) {
+          xSpeedInc++;
+          if (xSpeedInc ==maxSpeedInc)
+          xSpeed++;
+        }
+        if (xSpeed > MAX_SPEED)
+        xSpeed = MAX_SPEED;
+
+        if (this.x < 0){
+          xMove = 0;
+          xSpeed = 0;
+          xSpeedInc = 0;
+          this.x = 1;
+        } else{
+          this.x = this.x + xMove;
+        }
+
+        for (let rock = 0; rock < allRocks.length; rock++){
+          if (this.x < allRocks[rock].x + ROCK_WIDTH &&
+            this.x + CHAR_WIDTH > allRocks[rock].x &&
+            this.y < allRocks[rock].y + SQUARE_HEIGHT &&
+            this.y + SQUARE_HEIGHT > allRocks[rock].y &&
+            xSpeed > 0){
+              xMove = 0;
+              xSpeed = 0;
+              xSpeedInc = 0;
+              this.x = allRocks[rock].x + ROCK_WIDTH ;
+            }
+          }
+      }
+
       }
 
       update(dt){
@@ -158,11 +206,11 @@ class Player extends Objects{
                 case 'images/gem-blue.png':
                 gemPoint = BLUE_GEM_POINT;
                 break;
-                case 'images/enemy-green.png':
+                case 'images/gem-green.png':
                 gemPoint = GREEN_GEM_POINT;
                 break;
               }
-              drawGemPoint(allGems[gem].x, allGems[gem].y, gemPoint);
+              canvasText = new CanvasText(allGems[gem].x, allGems[gem].y, gemPoint);
               allGems.splice(gem,1);
             }
           }
@@ -186,7 +234,7 @@ class Player extends Objects{
             this.y = PLAYER_START_Y;
             createGameElements(level);
           } else{
-            ctx.fillText("You Won!",PLAYER_START_X, PLAYER_START_Y);
+            canvasText = new CanvasText(PLAYER_START_X, PLAYER_START_Y, "You Won!");
           }
         }
 
@@ -232,13 +280,20 @@ class Player extends Objects{
 
       update(dt){
         // Multiplies a movement by the dt parameter. This ensure the game runs at the same speed for all computers.
-        this.x = this.x + (this.move * dt);
+        if (gamePlay){
+          this.x = this.x + (this.move * dt);
+        }
 
         if (this.x < player.x + CHAR_WIDTH &&
           this.x + ENEMY_WIDTH > player.x &&
           this.y < player.y + SQUARE_HEIGHT &&
-          this.y + SQUARE_HEIGHT > player.y){;
-            console.log('hit');
+          this.y + SQUARE_HEIGHT > player.y){
+            gameOver();
+            if (lives>0){
+              playerHit();
+            }
+
+
           }
 
           for (let rock = 0; rock < allRocks.length; rock++){
@@ -293,12 +348,13 @@ class Player extends Objects{
 
         class Gem extends Objects{
 
-          constructor(x, y, sprite) {
+          constructor(x, y, sprite, arrayIndex, got) {
             super(x, y, sprite);
             this.x = x;
             this.y = y;
             this.sprite = sprite;
           }
+
         }
 
         // This listens for key presses and sends the keys to your
@@ -370,11 +426,6 @@ class Player extends Objects{
           allGems.push(gem);
         }
 
-        function drawGemPoint(textX, textY, textValue){
-          ctx.font="30px Verdana red";
-          ctx.fillText(textValue,textX,textY);
-        }
-
         function createEnemies(enemyX, enemyY, enemyType){
           let moveDirection = Math.floor(Math.random() * 2);
           if (moveDirection == 0){
@@ -425,13 +476,27 @@ class Player extends Objects{
               roadSquares.shift();
             }
             for (let gemIndex = 0; gemIndex < totalGems[level].length; gemIndex++){
-              createGems(roadSquares[0][0], roadSquares[0][1], totalGems[level][gemIndex]);
+              createGems(roadSquares[0][0], roadSquares[0][1], totalGems[level][gemIndex], gemIndex);
               roadSquares.shift();
             }
             for (let enemyIndex = 0; enemyIndex < totalEnemies[level].length; enemyIndex++){
               createEnemies(roadSquares[0][0], roadSquares[0][1], totalEnemies[level][enemyIndex]);
               roadSquares.shift();
             }
+          }
+        }
+
+        function playerHit(){
+          canvasText = new CanvasText(player.x , player.y, "HIT!");
+          player.x = PLAYER_START_X;
+          player.y = PLAYER_START_Y;
+          lives --;
+        }
+
+        function gameOver(){
+          if (lives == 0){
+            canvasText = new CanvasText(PLAYER_START_X, PLAYER_START_Y, "Game Over");
+            gamePlay = false;
           }
         }
 

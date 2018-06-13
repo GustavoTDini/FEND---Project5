@@ -22,11 +22,12 @@ var Engine = (function(global) {
         win = global.window,
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
+        gameCanvas = doc.getElementById("game-canvas"),
         lastTime;
 
     canvas.width = 909;
     canvas.height = 752;
-    doc.body.appendChild(canvas);
+    gameCanvas.appendChild(canvas);
 
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
@@ -93,6 +94,10 @@ var Engine = (function(global) {
             enemy.update(dt);
         });
         player.update();
+        if (canvasText != undefined){
+          canvasText.update(dt);
+        }
+
     }
 
     /* This function initially draws the "game level", it will then call
@@ -155,13 +160,16 @@ var Engine = (function(global) {
          });
          allGems.forEach(function(gem){
              gem.render();
-        });       
+        });
         allEnemies.forEach(function(enemy) {
             enemy.render();
         });
 
-
         player.render();
+
+        if (canvasText != undefined){
+          canvasText.render();
+        }
     }
 
     /* This function does nothing but it could have been a good place to
@@ -187,7 +195,13 @@ var Engine = (function(global) {
         'images/enemy-bug-2-r.png',
         'images/enemy-bug-3-r.png',
         'images/char-boy.png',
+        'images/char-cat-girl.png',
+        'images/char-horn-girl.png',
+        'images/char-pink-girl.png',
+        'images/char-princess-girl.png',
         'images/rock.png',
+        'images/selector.png',
+        'images/heart.png',
         'images/gem-blue.png',
         'images/gem-orange.png',
         'images/gem-green.png'
