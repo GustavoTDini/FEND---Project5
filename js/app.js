@@ -7,7 +7,10 @@ const PLAYER_START_Y = SQUARE_HEIGHT-23;
 const CHAR_WIDTH = 68;
 const ROCK_WIDTH = 82;
 const ENEMY_WIDTH = 98;
-const MAXSPEED = 2;
+const MAX_SPEED = 2;
+const ORANGE_GEM_POINT = 10;
+const BLUE_GEM_POINT = 50;
+const GREEN_GEM_POINT = 100;
 
 let rightKey;
 let leftKey;
@@ -15,19 +18,29 @@ let xSpeed = 0;
 let xSpeedInc = 0;
 let maxSpeedInc = 8;
 let xMove = 0;
+let gemPoint;
+let time = 0;
+let score = 0;
+let lives = 5;
 
 let firstSquare = [1,143];
 let roadSquares = [];
 let allEnemies = [];
 let allRocks = [];
+let allGems = [];
 
 let level = 0;
 let totalRocks = [0,3,5,7,10];
-let enemyTypes = [[0,0,1,1,2,2],
-                  [0,0,0,1,1,1,2,2],
-                  [0,0,0,0,1,1,1,1,2,2,2],
-                  [0,0,0,0,0,1,1,1,1,1,2,2,2,2],
-                  [0,0,0,0,0,0,1,1,1,1,1,1,2,2,2,2,2]];
+let totalGems = [[0],
+                 [0,1],
+                 [0,0,1,2],
+                 [0,0,1,1,2,2],
+                 [0,0,0,1,1,1,2,2,2]]
+let totalEnemies = [[0,0,1,1,2,2],
+                    [0,0,0,1,1,1,2,2],
+                    [0,0,0,0,1,1,1,1,2,2,2],
+                    [0,0,0,0,0,1,1,1,1,1,2,2,2,2],
+                    [0,0,0,0,0,0,1,1,1,1,1,1,2,2,2,2,2]];
 
 // Classe representando um objeto qualquer do jogo, aplica as funções básicas de construção e renderização
 class Objects {
@@ -73,8 +86,8 @@ class Player extends Objects{
       xSpeed--;
     }
 
-    if (xSpeed < -MAXSPEED)
-    xSpeed = -MAXSPEED;
+    if (xSpeed < -MAX_SPEED)
+    xSpeed = -MAX_SPEED;
 
     if (this.x > (CANVAS_WIDTH-SQUARE_WIDTH)) {
       xMove = 0;
@@ -105,8 +118,8 @@ class Player extends Objects{
         if (xSpeedInc ==maxSpeedInc)
         xSpeed++;
       }
-      if (xSpeed > MAXSPEED)
-      xSpeed = MAXSPEED;
+      if (xSpeed > MAX_SPEED)
+      xSpeed = MAX_SPEED;
 
       if (this.x < 0){
         xMove = 0;
@@ -132,6 +145,27 @@ class Player extends Objects{
       }
 
       update(dt){
+
+        for (let gem = 0; gem < allGems.length; gem++){
+          if (this.x < allGems[gem].x + CHAR_WIDTH &&
+            this.x + CHAR_WIDTH > allGems[gem].x &&
+            this.y < allGems[gem].y + SQUARE_HEIGHT &&
+            this.y + SQUARE_HEIGHT > allGems[gem].y){
+              switch (allGems[gem].sprite){
+                case 'images/gem-orange.png':
+                gemPoint = ORANGE_GEM_POINT;
+                break;
+                case 'images/gem-blue.png':
+                gemPoint = BLUE_GEM_POINT;
+                break;
+                case 'images/enemy-green.png':
+                gemPoint = GREEN_GEM_POINT;
+                break;
+              }
+              drawGemPoint(allGems[gem].x, allGems[gem].y, gemPoint);
+              allGems.splice(gem,1);
+            }
+          }
 
         this.moveLeft();
 
@@ -257,6 +291,16 @@ class Player extends Objects{
 
         }
 
+        class Gem extends Objects{
+
+          constructor(x, y, sprite) {
+            super(x, y, sprite);
+            this.x = x;
+            this.y = y;
+            this.sprite = sprite;
+          }
+        }
+
         // This listens for key presses and sends the keys to your
         // Player.handleInput() method. You don't need to modify this.
         document.addEventListener('keyup', function(e) {
@@ -307,8 +351,28 @@ class Player extends Objects{
         }
 
         function createRocks(rockX, rockY){
-          let thisRock = new Rock(rockX, rockY);
-          allRocks.push(thisRock);
+          rock = new Rock(rockX, rockY);
+          allRocks.push(rock);
+        }
+
+        function createGems(gemX, gemY, gemType){
+          switch (gemType){
+            case 0:
+              gem = new Gem( gemX, gemY, 'images/gem-orange.png');
+              break;
+            case 1:
+              gem = new Gem( gemX, gemY, 'images/gem-blue.png');
+              break;
+            case 2:
+              gem = new Gem( gemX, gemY, 'images/gem-green.png');
+              break;
+          }
+          allGems.push(gem);
+        }
+
+        function drawGemPoint(textX, textY, textValue){
+          ctx.font="30px Verdana red";
+          ctx.fillText(textValue,textX,textY);
         }
 
         function createEnemies(enemyX, enemyY, enemyType){
@@ -352,6 +416,7 @@ class Player extends Objects{
           roadSquares = [];
           allEnemies = [];
           allRocks = [];
+          allGems = [];
           createRoadArray();
           roadSquares = shuffleArray(roadSquares);
           if (level <= 4){
@@ -359,8 +424,12 @@ class Player extends Objects{
               createRocks(roadSquares[0][0], roadSquares[0][1]);
               roadSquares.shift();
             }
-            for (let enemyIndex = 0; enemyIndex < enemyTypes[level].length; enemyIndex++){
-              createEnemies(roadSquares[0][0], roadSquares[0][1], enemyTypes[level][enemyIndex]);
+            for (let gemIndex = 0; gemIndex < totalGems[level].length; gemIndex++){
+              createGems(roadSquares[0][0], roadSquares[0][1], totalGems[level][gemIndex]);
+              roadSquares.shift();
+            }
+            for (let enemyIndex = 0; enemyIndex < totalEnemies[level].length; enemyIndex++){
+              createEnemies(roadSquares[0][0], roadSquares[0][1], totalEnemies[level][enemyIndex]);
               roadSquares.shift();
             }
           }
