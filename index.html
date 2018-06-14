@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Garden Crosser: Frogger</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
   <!-- Game Start Screen -->
   <div class="start-screen">
-    <img class="game-logo" src="images/garden-crosser-logo.png"/>
+    <img class="game-logo" src="images/garden-crosser-logo.png" alt="Game Logo"/>
     <button id="button">Start</button>
   </div>
 
@@ -20,7 +23,7 @@
             <div id="show-lives"></div>
           </div>
           <div class="game-header-data">
-            <img class="game-logo header-image" src="images/garden-crosser-logo.png"/>
+            <img class="game-logo header-image" src="images/garden-crosser-logo.png" alt="Game Logo"/>
           </div>
           <div>
             <div class="game-header-data">
@@ -39,6 +42,68 @@
       <script src="js/engine.js"></script>
       <script src="js/gameui.js"></script>
     </div>
+
+    <!-- Modal Start Game-->
+    <div class="modal fade game-elements" id="game-start" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content modal-elements">
+          <div class="modal-header modal-elements">
+            <img class="game-logo header-image" src="images/garden-crosser-logo.png" alt="Game Logo"/>
+          </div>
+          <div class="modal-body modal-elements">
+            <p class="modal-font">
+              Regras do jogo
+            </p>
+            <div id="modal-selector-canvas">
+              <button class="arrow-button">&#8249;</button>
+              <img src="images/selector.png" alt="Finish Star"/>
+              <button class="arrow-button">&#8250;</button>
+            </div>
+          </div>
+          <div class="modal-footer modal-elements">
+            <button type="button" id="restart-button" class="btn btn-default modal-button" data-dismiss="modal">Começar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Game Over-->
+    <div class="modal fade game-elements" id="game-over" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header modal-elements">
+            <p class="modal-header-font">GAME OVER</p>
+          </div>
+          <div class="modal-body modal-elements">
+            <p class="modal-font">Você não conseguiu!!!</p>
+            <img src="images/star.png" alt="Finish Star"/>
+            <p class="modal-font">Tente Novamente!!!</p>
+          </div>
+          <div class="modal-footer modal-elements">
+            <button type="button" id="restart-button" class="btn btn-default modal-button" data-dismiss="modal">Reiniciar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Finished-->
+    <div class="modal fade game-elements" id="game-over" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header modal-elements">
+            <p class="modal-header-font">PARABÉNS</p>
+          </div>
+          <div class="modal-body modal-elements">
+            <p class="modal-font">Você Conseguiu!!!</p>
+            <img src="images/star.png" alt="Finish Star"/>
+          </div>
+          <div class="modal-footer modal-elements">
+            <button type="button" id="restart-button" class="btn btn-default modal-button" data-dismiss="modal">Reiniciar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
 </body>
 
 </html>

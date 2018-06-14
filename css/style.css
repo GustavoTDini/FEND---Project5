@@ -67,3 +67,50 @@ button{
 .header-image{
   max-width: 50%;
 }
+
+/* Modal Styles */
+.modal-button{
+  padding: 2px;
+  width: 100%;
+}
+
+.modal-font{
+  font-family: verdana;
+  color: #ffbd00;
+  font-size: 20px;
+  text-align: center;
+  margin: 10px;
+}
+
+.modal-header-font{
+  font-family: verdana;
+  color: #ffbd00;
+  font-size: 50px;
+  text-align: center;
+  margin: 10px;
+}
+
+#modal-selector-canvas{
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+}
+
+.modal-elements{
+  padding: 10px;
+}
+
+.arrow-button{
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  background-color: #5D4037;
+  font-family: verdana;
+  color: #ffbd00;
+  cursor: pointer;
+  font-size: 35px;
+  vertical-align: middle;
+  padding: 0px;
+  margin: 10px;
+}
