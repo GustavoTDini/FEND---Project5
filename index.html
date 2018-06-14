@@ -8,28 +8,36 @@
 <body>
   <!-- Game Start Screen -->
   <div class="start-screen">
-    <h1>GARDEN CROSSER</h1>
+    <img class="game-logo" src="images/garden-crosser-logo.png"/>
     <button id="button">Start</button>
   </div>
 
   <!-- componentes da tela de jogo -->
-    <div class="container game-board">
-      <header class="game-elements">
-        <div class="header-data">
-          <div class="pokemon-font">
-            Tentativas:
-            <a id="tries">0</a>
+    <div class="game-board">
+      <header class="game-elements game-header">
+          <div class="game-header-data">
+            <p class ="game-header-text-left">Vidas:</p>
+            <div id="show-lives"></div>
           </div>
-          <div class="pokemon-font">
-            Tempo:
-            <a id="time">0</a>
+          <div class="game-header-data">
+            <img class="game-logo header-image" src="images/garden-crosser-logo.png"/>
           </div>
-        </div>
+          <div>
+            <div class="game-header-data">
+              <p class ="game-header-text-right">Pontuação:</p>
+              <p class ="game-header-text-right" id="points">PONTOS</p>
+            </div>
+            <div class="game-header-data">
+              <p class ="game-header-text-right">Tempo:</p>
+              <p class ="game-header-text-right" id="time">TEMPO</p>
+            </div>
+          </div>
       </header>
       <div id="game-canvas" class="game-elements"></div>
       <script src="js/resources.js"></script>
       <script src="js/app.js"></script>
       <script src="js/engine.js"></script>
+      <script src="js/gameui.js"></script>
     </div>
 </body>
 
