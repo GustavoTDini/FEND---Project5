@@ -34,6 +34,13 @@ let allRocks = [];
 let allGems = [];
 
 let level = 0;
+let playerAvatars = ['images/char-boy.png',
+                     'images/char-cat-girl.png',
+                     'images/char-horn-girl.png',
+                     'images/char-pink-girl.png',
+                     'images/char-princess-girl.png'];
+let playerSelection = 0;
+let player;
 let totalRocks = [0,3,5,7,10];
 let totalGems = [[0],
                  [0,1],
@@ -45,6 +52,8 @@ let totalEnemies = [[0,0,1,1,2,2],
                     [0,0,0,0,1,1,1,1,2,2,2],
                     [0,0,0,0,0,1,1,1,1,1,2,2,2,2],
                     [0,0,0,0,0,0,1,1,1,1,1,1,2,2,2,2,2]];
+
+
 
 // Classe representando um objeto qualquer do jogo, aplica as funções básicas de construção e renderização
 class Objects {
@@ -102,7 +111,7 @@ class Player extends Objects{
     super(x, y, sprite);
     this.x = x;
     this.y = y;
-    this.sprite = 'images/char-boy.png';
+    this.sprite = sprite;
   }
 
   moveUpAndDown(direction){
@@ -267,136 +276,204 @@ class Player extends Objects{
 
 }
 
-    // Classe representando o inimigo
-    class Enemy extends Objects{
+// Classe representando o inimigo
+class Enemy extends Objects{
 
-      constructor(x, y, move, sprite) {
-        super(x, y, move, sprite);
-        this.x = x;
-        this.y = y;
-        this.move = move;
-        this.sprite = sprite;
+  constructor(x, y, move, sprite) {
+  super(x, y, move, sprite);
+  this.x = x;
+  this.y = y;
+  this.move = move;
+  this.sprite = sprite;
+  }
+
+  update(dt){
+  // Multiplies a movement by the dt parameter. This ensure the game runs at the same speed for all computers.
+  if (gamePlay){
+    this.x = this.x + (this.move * dt);
+  }
+
+  if (this.x < player.x + CHAR_WIDTH &&
+    this.x + ENEMY_WIDTH > player.x &&
+    this.y < player.y + SQUARE_HEIGHT &&
+    this.y + SQUARE_HEIGHT > player.y){
+      gameOver();
+      if (lives>0){
+        playerHit();
       }
 
-      update(dt){
-        // Multiplies a movement by the dt parameter. This ensure the game runs at the same speed for all computers.
-        if (gamePlay){
-          this.x = this.x + (this.move * dt);
-        }
 
-        if (this.x < player.x + CHAR_WIDTH &&
-          this.x + ENEMY_WIDTH > player.x &&
-          this.y < player.y + SQUARE_HEIGHT &&
-          this.y + SQUARE_HEIGHT > player.y){
-            gameOver();
-            if (lives>0){
-              playerHit();
-            }
+    }
 
-
+    for (let rock = 0; rock < allRocks.length; rock++){
+      if (this.x < allRocks[rock].x + ROCK_WIDTH &&
+        this.x + ENEMY_WIDTH > allRocks[rock].x &&
+        this.y < allRocks[rock].y + SQUARE_HEIGHT &&
+        this.y + SQUARE_HEIGHT > allRocks[rock].y){
+          this.move = -this.move
+          switch (this.sprite){
+            case 'images/enemy-bug.png':
+            this.sprite = 'images/enemy-bug-r.png';
+            break;
+            case 'images/enemy-bug-r.png':
+            this.sprite = 'images/enemy-bug.png';
+            break;
+            case 'images/enemy-bug-2.png':
+            this.sprite = 'images/enemy-bug-2-r.png';
+            break;
+            case 'images/enemy-bug-2-r.png':
+            this.sprite = 'images/enemy-bug-2.png';
+            break;
+            case 'images/enemy-bug-3.png':
+            this.sprite = 'images/enemy-bug-3-r.png';
+            break;
+            case 'images/enemy-bug-3-r.png':
+            this.sprite = 'images/enemy-bug-3.png';
+            break;
           }
-
-          for (let rock = 0; rock < allRocks.length; rock++){
-            if (this.x < allRocks[rock].x + ROCK_WIDTH &&
-              this.x + ENEMY_WIDTH > allRocks[rock].x &&
-              this.y < allRocks[rock].y + SQUARE_HEIGHT &&
-              this.y + SQUARE_HEIGHT > allRocks[rock].y){
-                this.move = -this.move
-                switch (this.sprite){
-                  case 'images/enemy-bug.png':
-                  this.sprite = 'images/enemy-bug-r.png';
-                  break;
-                  case 'images/enemy-bug-r.png':
-                  this.sprite = 'images/enemy-bug.png';
-                  break;
-                  case 'images/enemy-bug-2.png':
-                  this.sprite = 'images/enemy-bug-2-r.png';
-                  break;
-                  case 'images/enemy-bug-2-r.png':
-                  this.sprite = 'images/enemy-bug-2.png';
-                  break;
-                  case 'images/enemy-bug-3.png':
-                  this.sprite = 'images/enemy-bug-3-r.png';
-                  break;
-                  case 'images/enemy-bug-3-r.png':
-                  this.sprite = 'images/enemy-bug-3.png';
-                  break;
-                }
-              }
-            }
-
-            if(this.x > CANVAS_WIDTH + 100) {
-              this.x = -100;
-            } else if (this.x < -110) {
-              this.x = CANVAS_WIDTH + 100;
-            }
-
-          }
-
         }
+      }
 
-        class Rock extends Objects{
+      if(this.x > CANVAS_WIDTH + 100) {
+        this.x = -100;
+      } else if (this.x < -110) {
+        this.x = CANVAS_WIDTH + 100;
+      }
 
-          constructor(x, y, sprite) {
-            super(x, y, sprite);
-            this.x = x;
-            this.y = y;
-            this.sprite = 'images/rock.png';
-          }
+    }
 
-        }
+}
 
-        class Gem extends Objects{
+class Rock extends Objects{
 
-          constructor(x, y, sprite, arrayIndex, got) {
-            super(x, y, sprite);
-            this.x = x;
-            this.y = y;
-            this.sprite = sprite;
-          }
+  constructor(x, y, sprite) {
+    super(x, y, sprite);
+    this.x = x;
+    this.y = y;
+    this.sprite = 'images/rock.png';
+  }
 
-        }
+}
 
-        // This listens for key presses and sends the keys to your
-        // Player.handleInput() method. You don't need to modify this.
-        document.addEventListener('keyup', function(e) {
-          var allowedKeys = {
-            13: 'enter',
-            32: 'space',
-            37: 'left',
-            38: 'up',
-            39: 'right',
-            40: 'down'
-          };
-          player.handleInputUp(allowedKeys[e.keyCode]);
-        });
+class Gem extends Objects{
 
-        document.addEventListener('keydown', function(e) {
-          var allowedKeys = {
-            13: 'enter',
-            32: 'space',
-            37: 'left',
-            38: 'up',
-            39: 'right',
-            40: 'down'
-          };
-          player.handleInputDown(allowedKeys[e.keyCode]);
-        });
+  constructor(x, y, sprite, arrayIndex, got) {
+    super(x, y, sprite);
+    this.x = x;
+    this.y = y;
+    this.sprite = sprite;
+  }
 
-        // função para embaralhar uma array, usei o algoritmo de Durstenfeld
-        function shuffleArray(array){
-          for (var i = array.length - 1; i > 0; i--) {
-            var j = Math.floor(Math.random() * (i + 1));
-            var temp = array[i];
-            array[i] = array[j];
-            array[j] = temp;
-          }
-          return array;
-        }
+}
 
-        function playerHit(){
-          canvasText = new CanvasText(player.x , player.y, "HIT!");
-          player.x = PLAYER_START_X;
-          player.y = PLAYER_START_Y;
-          lives --;
-        }
+// This listens for key presses and sends the keys to your
+// Player.handleInput() method. You don't need to modify this.
+document.addEventListener('keyup', function(e) {
+  var allowedKeys = {
+    13: 'enter',
+    32: 'space',
+    37: 'left',
+    38: 'up',
+    39: 'right',
+    40: 'down'
+  };
+  player.handleInputUp(allowedKeys[e.keyCode]);
+});
+
+document.addEventListener('keydown', function(e) {
+  var allowedKeys = {
+    13: 'enter',
+    32: 'space',
+    37: 'left',
+    38: 'up',
+    39: 'right',
+    40: 'down'
+  };
+  player.handleInputDown(allowedKeys[e.keyCode]);
+});
+
+// função para embaralhar uma array, usei o algoritmo de Durstenfeld
+function shuffleArray(array){
+  for (var i = array.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+  }
+  return array;
+}
+
+function playerHit(){
+  canvasText = new CanvasText(player.x , player.y, "HIT!");
+  player.x = PLAYER_START_X;
+  player.y = PLAYER_START_Y;
+  lives --;
+}
+
+function createRoadArray(){
+  for (row = 0; row < 5; row++){
+    for (column = 0; column <9; column ++){
+      squareX = firstSquare[0] + (SQUARE_WIDTH*column);
+      squareY = firstSquare[1] + (SQUARE_HEIGHT*row);
+      thisSquare = [squareX,squareY];
+      roadSquares.push(thisSquare);
+    }
+  }
+}
+
+function createRocks(rockX, rockY){
+  rock = new Rock(rockX, rockY);
+  allRocks.push(rock);
+}
+
+function createGems(gemX, gemY, gemType){
+  switch (gemType){
+    case 0:
+      gem = new Gem( gemX, gemY, 'images/gem-orange.png');
+      break;
+    case 1:
+      gem = new Gem( gemX, gemY, 'images/gem-blue.png');
+      break;
+    case 2:
+      gem = new Gem( gemX, gemY, 'images/gem-green.png');
+      break;
+  }
+  allGems.push(gem);
+}
+
+function createEnemies(enemyX, enemyY, enemyType){
+  let moveDirection = Math.floor(Math.random() * 2);
+  if (moveDirection == 0){
+    moveDirection = -1;
+  }
+  switch (enemyType) {
+    case 0:
+    enemy = new Enemy(enemyX, enemyY);
+    enemy.move = (Math.floor(Math.random() * 100) + 70)*moveDirection;
+    if (moveDirection<0){
+      enemy.sprite = 'images/enemy-bug-r.png';
+    } else{
+      enemy.sprite = 'images/enemy-bug.png';
+    }
+    break;
+    case 1:
+    enemy = new Enemy(enemyX, enemyY);
+    enemy.move = (Math.floor(Math.random() * 100) + 120)*moveDirection;
+    if (moveDirection<0){
+      enemy.sprite = 'images/enemy-bug-2-r.png';
+    } else{
+      enemy.sprite = 'images/enemy-bug-2.png';
+    }
+    break;
+    case 2:
+    enemy = new Enemy(enemyX, enemyY);
+    enemy.move = (Math.floor(Math.random() * 100) + 120)*moveDirection;
+    if (moveDirection<0){
+      enemy.sprite = 'images/enemy-bug-3-r.png';
+    } else{
+      enemy.sprite = 'images/enemy-bug-3.png';
+    }
+    break;
+  }
+  allEnemies.push(enemy);
+}

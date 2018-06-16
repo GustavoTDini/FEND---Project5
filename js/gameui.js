@@ -1,58 +1,43 @@
-function createRocks(rockX, rockY){
-  rock = new Rock(rockX, rockY);
-  allRocks.push(rock);
-}
+// inicio do script escondendo tela de jogo
+$('.game-board').hide();
 
-function createGems(gemX, gemY, gemType){
-  switch (gemType){
-    case 0:
-      gem = new Gem( gemX, gemY, 'images/gem-orange.png');
-      break;
-    case 1:
-      gem = new Gem( gemX, gemY, 'images/gem-blue.png');
-      break;
-    case 2:
-      gem = new Gem( gemX, gemY, 'images/gem-green.png');
-      break;
-  }
-  allGems.push(gem);
-}
 
-function createEnemies(enemyX, enemyY, enemyType){
-  let moveDirection = Math.floor(Math.random() * 2);
-  if (moveDirection == 0){
-    moveDirection = -1;
-  }
-  switch (enemyType) {
-    case 0:
-    enemy = new Enemy(enemyX, enemyY);
-    enemy.move = (Math.floor(Math.random() * 100) + 70)*moveDirection;
-    if (moveDirection<0){
-      enemy.sprite = 'images/enemy-bug-r.png';
+
+let startButton = $("#start-button").click(function(){
+  $("#game-start").modal();
+  drawSelector(playerAvatars[playerSelection]);
+  let leftSelector = $("#selector-left").click(function(){
+    if (playerSelection == 0){
+      playerSelection = 4
     } else{
-      enemy.sprite = 'images/enemy-bug.png';
+      playerSelection --;
     }
-    break;
-    case 1:
-    enemy = new Enemy(enemyX, enemyY);
-    enemy.move = (Math.floor(Math.random() * 100) + 120)*moveDirection;
-    if (moveDirection<0){
-      enemy.sprite = 'images/enemy-bug-2-r.png';
+    drawSelector(playerAvatars[playerSelection]);
+  });
+
+  let rightSelector = $("#selector-right").click(function(){
+    if (playerSelection == 4){
+      playerSelection = 0
     } else{
-      enemy.sprite = 'images/enemy-bug-2.png';
+      playerSelection ++;
     }
-    break;
-    case 2:
-    enemy = new Enemy(enemyX, enemyY);
-    enemy.move = (Math.floor(Math.random() * 100) + 120)*moveDirection;
-    if (moveDirection<0){
-      enemy.sprite = 'images/enemy-bug-3-r.png';
-    } else{
-      enemy.sprite = 'images/enemy-bug-3.png';
-    }
-    break;
-  }
-  allEnemies.push(enemy);
+    drawSelector(playerAvatars[playerSelection]);
+  });
+
+  let startGameButton = $("#start-game").click(function(){
+    startGame();
+  });
+});
+
+
+
+function drawSelector(avatar){
+  var selectorCanvas = document.getElementById("selector-canvas");
+  var selectorCtx = selectorCanvas.getContext("2d");
+  selectorCtx.clearRect(0, 0, selectorCanvas.width, selectorCanvas.height);
+  selectorCtx.drawImage(Resources.get('images/selector.png'), 0, 0);
+  selectorCtx.drawImage(Resources.get(avatar), 0, 0);
+
 }
 
 function createGameElements(level){
@@ -85,17 +70,10 @@ function gameOver(){
   }
 }
 
-function createRoadArray(){
-  for (row = 0; row < 5; row++){
-    for (column = 0; column <9; column ++){
-      squareX = firstSquare[0] + (SQUARE_WIDTH*column);
-      squareY = firstSquare[1] + (SQUARE_HEIGHT*row);
-      thisSquare = [squareX,squareY];
-      roadSquares.push(thisSquare);
-    }
-  }
+
+function startGame(){
+  $('.start-screen').hide();
+  $('.game-board').show();
+  createGameElements(level);
+  player = new Player(PLAYER_START_X,PLAYER_START_Y, playerAvatars[playerSelection]);
 }
-
-createGameElements(level);
-
-let player = new Player(PLAYER_START_X,PLAYER_START_Y);

@@ -93,11 +93,12 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
         });
-        player.update();
+        if (player != undefined){
+          player.update(dt);
+        };
         if (canvasText != undefined){
           canvasText.update(dt);
-        }
-
+        };
     }
 
     /* This function initially draws the "game level", it will then call
@@ -164,8 +165,9 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             enemy.render();
         });
-
-        player.render();
+        if (player != undefined){
+          player.render();
+        }
 
         if (canvasText != undefined){
           canvasText.render();

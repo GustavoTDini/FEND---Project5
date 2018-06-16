@@ -11,8 +11,10 @@
 <body>
   <!-- Game Start Screen -->
   <div class="start-screen">
-    <img class="game-logo" src="images/garden-crosser-logo.png" alt="Game Logo"/>
-    <button id="button">Start</button>
+    <div>
+      <img class="game-logo" src="images/garden-crosser-logo.png" alt="Game Logo"/>
+      <button id="start-button">Start</button>
+    </div>
   </div>
 
   <!-- componentes da tela de jogo -->
@@ -44,9 +46,9 @@
     </div>
 
     <!-- Modal Start Game-->
-    <div class="modal fade game-elements" id="game-start" tabindex="-1" role="dialog">
+    <div class="modal fade" id="game-start" tabindex="-1" data-keyboard="false" data-backdrop="static">
       <div class="modal-dialog" role="document">
-        <div class="modal-content modal-elements">
+        <div class="modal-content modal-elements game-elements">
           <div class="modal-header modal-elements">
             <img class="game-logo header-image" src="images/garden-crosser-logo.png" alt="Game Logo"/>
           </div>
@@ -55,13 +57,13 @@
               Regras do jogo
             </p>
             <div id="modal-selector-canvas">
-              <button class="arrow-button">&#8249;</button>
-              <img src="images/selector.png" alt="Finish Star"/>
-              <button class="arrow-button">&#8250;</button>
+              <button class="arrow-button" id="selector-left">&#8249;</button>
+              <canvas height="171" width="101" id="selector-canvas"></canvas>
+              <button class="arrow-button" id="selector-right">&#8250;</button>
             </div>
           </div>
           <div class="modal-footer modal-elements">
-            <button type="button" id="restart-button" class="btn btn-default modal-button" data-dismiss="modal">Começar</button>
+            <button type="button" id="start-game" class="btn btn-default modal-button" data-dismiss="modal">Começar</button>
           </div>
         </div>
       </div>
@@ -87,7 +89,7 @@
     </div>
 
     <!-- Modal Finished-->
-    <div class="modal fade game-elements" id="game-over" tabindex="-1" role="dialog">
+    <div class="modal fade game-elements" id="game-finished" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header modal-elements">
