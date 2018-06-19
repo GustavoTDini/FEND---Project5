@@ -19,26 +19,27 @@
 
   <!-- componentes da tela de jogo -->
     <div class="game-board">
-      <header class="game-elements game-header">
-          <div class="game-header-data">
-            <p class ="game-header-text-left">Vidas:</p>
+      <div class="game-elements game-ui">
+          <div class="game-ui-data">
+            <p class ="game-ui-text font">Vidas:</p>
             <div id="show-lives"></div>
           </div>
-          <div class="game-header-data">
-            <img class="game-logo header-image" src="images/garden-crosser-logo.png" alt="Game Logo"/>
+          <div class="game-ui-data">
+            <img class="game-logo ui-image" src="images/garden-crosser-logo.png" alt="Game Logo"/>
+            <p class ="game-ui-text-center font" id="stage">Fase 1</p>
+            <div id="game-canvas"></div>
           </div>
           <div>
-            <div class="game-header-data">
-              <p class ="game-header-text-right">Pontuação:</p>
-              <p class ="game-header-text-right" id="points">PONTOS</p>
+            <div class="game-ui-data">
+              <p class ="game-ui-text font">Pontuação:</p>
+              <p class ="game-ui-text font" id="points">0</p>
             </div>
-            <div class="game-header-data">
-              <p class ="game-header-text-right">Tempo:</p>
-              <p class ="game-header-text-right" id="time">TEMPO</p>
+            <div class="game-ui-data">
+              <p class ="game-ui-text font">Tempo:</p>
+              <p class ="game-ui-text font" id="time">0</p>
             </div>
           </div>
-      </header>
-      <div id="game-canvas" class="game-elements"></div>
+      </div>
       <script src="js/resources.js"></script>
       <script src="js/app.js"></script>
       <script src="js/engine.js"></script>
@@ -46,14 +47,14 @@
     </div>
 
     <!-- Modal Start Game-->
-    <div class="modal fade" id="game-start" tabindex="-1" data-keyboard="false" data-backdrop="static">
+    <div class="modal fade" id="game-start" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content modal-elements game-elements">
           <div class="modal-header modal-elements">
-            <img class="game-logo header-image" src="images/garden-crosser-logo.png" alt="Game Logo"/>
+            <img class="game-logo ui-image" src="images/garden-crosser-logo.png" alt="Game Logo"/>
           </div>
           <div class="modal-body modal-elements">
-            <p class="modal-font">
+            <p class="modal-font font">
               Regras do jogo
             </p>
             <div id="modal-selector-canvas">
@@ -63,44 +64,46 @@
             </div>
           </div>
           <div class="modal-footer modal-elements">
-            <button type="button" id="start-game" class="btn btn-default modal-button" data-dismiss="modal">Começar</button>
+            <button type="button" id="start-game" class="close modal-button" data-dismiss="modal">Começar</button>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Modal Game Over-->
-    <div class="modal fade game-elements" id="game-over" tabindex="-1" role="dialog">
+    <div class="modal fade" id="game-over" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
-        <div class="modal-content">
+        <div class="modal-content game-elements">
           <div class="modal-header modal-elements">
-            <p class="modal-header-font">GAME OVER</p>
+            <p class="modal-header-font font">GAME OVER</p>
           </div>
           <div class="modal-body modal-elements">
-            <p class="modal-font">Você não conseguiu!!!</p>
-            <img src="images/star.png" alt="Finish Star"/>
-            <p class="modal-font">Tente Novamente!!!</p>
+            <p class="modal-font font">Você não conseguiu!!!</p>
+            <img src="images/sad-face.png" alt="sad face"/>
+            <p class="modal-font font">Tente Novamente!!!</p>
           </div>
           <div class="modal-footer modal-elements">
-            <button type="button" id="restart-button" class="btn btn-default modal-button" data-dismiss="modal">Reiniciar</button>
+            <button type="button" id="retry-button" class="close modal-button" data-dismiss="modal">Tente Novamente</button>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Modal Finished-->
-    <div class="modal fade game-elements" id="game-finished" tabindex="-1" role="dialog">
+    <div class="modal fade" id="game-finished" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
-        <div class="modal-content">
+        <div class="modal-content game-elements">
           <div class="modal-header modal-elements">
-            <p class="modal-header-font">PARABÉNS</p>
+            <p class="modal-header-font font">PARABÉNS</p>
           </div>
           <div class="modal-body modal-elements">
-            <p class="modal-font">Você Conseguiu!!!</p>
-            <img src="images/star.png" alt="Finish Star"/>
+            <p class="modal-font font">Você Conseguiu!!!</p>
+            <img src="images/happy-face.png" alt="happy Face"/>
+            <p class="modal-font font">Sua Pontuação</p>
+            <p class="modal-font font" id="modal-points">Sua Pontuação</p>
           </div>
           <div class="modal-footer modal-elements">
-            <button type="button" id="restart-button" class="btn btn-default modal-button" data-dismiss="modal">Reiniciar</button>
+            <button type="button" id="restart-button" class="close modal-button" data-dismiss="modal">Reiniciar</button>
           </div>
         </div>
       </div>

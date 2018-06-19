@@ -1,10 +1,24 @@
 // inicio do script escondendo tela de jogo
 $('.game-board').hide();
 
-
-
 let startButton = $("#start-button").click(function(){
+  OpenStartModal();
+});
+
+function OpenGameOverModal(){
+  $("#game-over").modal();
+  gamePlay = false;
+}
+
+function OpenGameFinishedModal(){
+  $("#game-finished").modal();
+  $("#modal-points").text(score);
+  gamePlay = false;
+}
+
+function OpenStartModal(){
   $("#game-start").modal();
+  playerSelection = 0;
   drawSelector(playerAvatars[playerSelection]);
   let leftSelector = $("#selector-left").click(function(){
     if (playerSelection == 0){
@@ -27,8 +41,7 @@ let startButton = $("#start-button").click(function(){
   let startGameButton = $("#start-game").click(function(){
     startGame();
   });
-});
-
+}
 
 
 function drawSelector(avatar){
@@ -65,15 +78,56 @@ function createGameElements(level){
 
 function gameOver(){
   if (lives == 0){
-    canvasText = new CanvasText(PLAYER_START_X - SQUARE_WIDTH*1.85, PLAYER_START_Y, "Game Over");
-    gamePlay = false;
+    OpenGameOverModal();
   }
 }
 
-
 function startGame(){
+  gameReset();
   $('.start-screen').hide();
   $('.game-board').show();
   createGameElements(level);
   player = new Player(PLAYER_START_X,PLAYER_START_Y, playerAvatars[playerSelection]);
+}
+
+// Função do temporizador
+let countUp = function(){
+  $("#time").text(time);
+  time ++;
+}
+
+// Função do Contador de Pontos
+function scoreUp(upScore){
+  score += upScore;
+  $("#points").text(score);
+}
+
+// Função do Contador de Vidas
+function showLives(){
+  $("#show-lives").empty();
+  for (livesCount = 0; livesCount < lives; livesCount++){
+    $("#show-lives").append('<img src="images/heart.png" class="heart-image" alt="Game Logo"/>');
+  }
+}
+
+function gameRestart(){
+  $('.start-screen').show();
+  $('.game-board').hide();
+}
+
+function gameReset(){
+  gamePlay = true;
+  time = 0;
+  score = 0;
+  lives = 5;
+  textColorChanger = 5;
+  roadSquares = [];
+  allEnemies = [];
+  allRocks = [];
+  allGems = [];
+  level = 0;
+  $('#points').empty().append(score);
+  $('#time').empty().append(time);
+  showLives();
+  passedTime = setInterval(countUp,1000);
 }

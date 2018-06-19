@@ -11,14 +11,17 @@ const MAX_SPEED = 2;
 const ORANGE_GEM_POINT = 10;
 const BLUE_GEM_POINT = 50;
 const GREEN_GEM_POINT = 100;
-const TEXT_TIME_START = 150
+const PASS_STAGE_POINT = 50;
+const HIT_POINT = -30;
+const TEXT_TIME_START = 150;
+const MAX_SPEED_INC = 8;
+const FIRST_SQUARE = [1,143];
 
 let gamePlay = true;
 let rightKey;
 let leftKey;
 let xSpeed = 0;
 let xSpeedInc = 0;
-let maxSpeedInc = 8;
 let xMove = 0;
 let gemPoint;
 let time = 0;
@@ -26,8 +29,15 @@ let score = 0;
 let lives = 5;
 let canvasText;
 let textColorChanger = 5;
+// gameMusic from http://soundimage.org/
+let gameMusic = new sound("sounds/strange-nature-looping.mp3");
+// gamesounds from http://soundbible.com/
+let hitSound = new sound("sounds/punch.mp3");
+let gemSound = new sound("sounds/shooting-star.mp3");
+let winSound = new sound("sounds/fireworks.mp3");
+let loseSound = new sound("sounds/sad-trombone.mp3");
 
-let firstSquare = [1,143];
+
 let roadSquares = [];
 let allEnemies = [];
 let allRocks = [];
@@ -134,7 +144,7 @@ class Player extends Objects{
     if(gamePlay){
       if (rightKey){
         xSpeedInc--;
-        if (xSpeedInc == -maxSpeedInc)
+        if (xSpeedInc == -MAX_SPEED_INC)
         xSpeed--;
       }
 
@@ -170,7 +180,7 @@ class Player extends Objects{
       if (gamePlay){
         if (leftKey) {
           xSpeedInc++;
-          if (xSpeedInc ==maxSpeedInc)
+          if (xSpeedInc ==MAX_SPEED_INC)
           xSpeed++;
         }
         if (xSpeed > MAX_SPEED)
@@ -220,6 +230,7 @@ class Player extends Objects{
                 break;
               }
               canvasText = new CanvasText(allGems[gem].x, allGems[gem].y, gemPoint);
+              scoreUp(gemPoint);
               allGems.splice(gem,1);
             }
           }
@@ -238,12 +249,15 @@ class Player extends Objects{
 
         if (this.y > 550){
           if (level <4){
+            scoreUp(PASS_STAGE_POINT*level);
             level++;
             this.x = PLAYER_START_X;
             this.y = PLAYER_START_Y;
             createGameElements(level);
+            console.log(level);
+            $("#stage").text("Fase " + (level+1));
           } else{
-            canvasText = new CanvasText(PLAYER_START_X, PLAYER_START_Y, "You Won!");
+            OpenGameFinishedModal();
           }
         }
 
@@ -408,13 +422,15 @@ function playerHit(){
   player.x = PLAYER_START_X;
   player.y = PLAYER_START_Y;
   lives --;
+  scoreUp(HIT_POINT);
+  showLives();
 }
 
 function createRoadArray(){
   for (row = 0; row < 5; row++){
     for (column = 0; column <9; column ++){
-      squareX = firstSquare[0] + (SQUARE_WIDTH*column);
-      squareY = firstSquare[1] + (SQUARE_HEIGHT*row);
+      squareX = FIRST_SQUARE[0] + (SQUARE_WIDTH*column);
+      squareY = FIRST_SQUARE[1] + (SQUARE_HEIGHT*row);
       thisSquare = [squareX,squareY];
       roadSquares.push(thisSquare);
     }
