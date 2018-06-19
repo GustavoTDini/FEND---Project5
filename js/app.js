@@ -30,12 +30,12 @@ let lives = 5;
 let canvasText;
 let textColorChanger = 5;
 // gameMusic from http://soundimage.org/
-let gameMusic = new Audio("sounds/strange-nature-looping.mp3");
+let gameMusic = new Audio("sounds/more-monkey-island-band.mp3");
 // gamesounds from http://soundbible.com/
-let hitSound = new sound("sounds/punch.mp3");
-let gemSound = new sound("sounds/shooting-star.mp3");
-let winSound = new sound("sounds/fireworks.mp3");
-let loseSound = new sound("sounds/sad-trombone.mp3");
+let hitSound = new Audio("sounds/punch.mp3");
+let gemSound = new Audio("sounds/shooting-star.mp3");
+let winSound = new Audio("sounds/fireworks.mp3");
+let loseSound = new Audio("sounds/sad-trombone.mp3");
 
 
 let roadSquares = [];
@@ -257,7 +257,9 @@ class Player extends Objects{
             createGameElements(level);
             console.log(level);
             $("#stage").text("Fase " + (level+1));
-          } else{
+          } else if(level == 4){
+            console.log(level);
+            level ++;
             winSound.play();
             OpenGameFinishedModal();
           }
@@ -317,8 +319,6 @@ class Enemy extends Objects{
       if (lives>0){
         playerHit();
       }
-
-
     }
 
     for (let rock = 0; rock < allRocks.length; rock++){
@@ -368,7 +368,6 @@ class Rock extends Objects{
     this.y = y;
     this.sprite = 'images/rock.png';
   }
-
 }
 
 class Gem extends Objects{

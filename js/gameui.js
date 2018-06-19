@@ -10,9 +10,9 @@ function OpenGameOverModal(){
   $("#game-over").show();
   gamePlay = false;
   let retry = $("#retry-button").click(function(){
-    console.log('retry');
+    restartGame();
+    $('#game-over').hide();
     OpenStartModal();
-    //$("#game-over").hide();
   });
 }
 
@@ -20,11 +20,13 @@ function OpenGameFinishedModal(){
   $("#game-finished").show()
   $("#modal-points").text(score);
   gamePlay = false;
-  let restart = $("#restart-button").onClick(function(){
-    $("#game-finished").hide();
+  let restart = $("#restart-button").click(function(){
+    restartGame();
+    $('#game-finished').hide();
     OpenStartModal();
   });
 }
+
 
 function OpenStartModal(){
   $("#game-start").show();
@@ -49,6 +51,7 @@ function OpenStartModal(){
   });
 
   let startGameButton = $("#start-game").click(function(){
+    console.log('startGame');
     $("#game-start").hide();
     startGame();
   });
@@ -89,6 +92,7 @@ function createGameElements(level){
 
 function gameOver(){
   if (lives == 0){
+    lives = -1;
     loseSound.play();
     OpenGameOverModal();
   }
@@ -126,6 +130,12 @@ function showLives(){
   for (livesCount = 0; livesCount < lives; livesCount++){
     $("#show-lives").append('<img src="images/heart.png" class="heart" alt="Game Logo"/>');
   }
+}
+
+function restartGame(){
+  $('.start-screen').show();
+  $('.game-board').hide();
+  gameMusic.pause();
 }
 
 function gameReset(){

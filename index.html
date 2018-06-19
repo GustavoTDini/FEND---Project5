@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Garden Crosser: Frogger</title>
-    <!-- <link rel="stylesheet" href="css/bootstrap.min.css"> -->
     <link rel="stylesheet" href="css/style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <!-- <script src="js/bootstrap.min.js"></script> -->
 </head>
 <body>
   <!-- Game Start Screen -->
@@ -71,8 +69,8 @@
 
     <!-- Modal Game Over-->
     <div id="game-over" class="modal">
-        <div class="modal-content game-elements">
-          <div class="modal-header modal-elements">
+        <div class="game-elements">
+          <div>
             <p class="modal-header-font font">GAME OVER</p>
           </div>
           <div class="modal-body modal-elements">
@@ -80,7 +78,7 @@
             <img src="images/sad-face.png" alt="sad face"/>
             <p class="modal-font font">Tente Novamente!!!</p>
           </div>
-          <div class="modal-footer modal-elements">
+          <div>
             <button id="retry-button" class="modal-button">Tente Novamente</button>
           </div>
         </div>
@@ -88,8 +86,8 @@
 
     <!-- Modal Finished-->
     <div id="game-finished" class="modal">
-        <div class="modal-content game-elements">
-          <div class="modal-header modal-elements">
+        <div class="game-elements">
+          <div>
             <p class="modal-header-font font">PARABÉNS</p>
           </div>
           <div class="modal-body modal-elements">
@@ -98,12 +96,11 @@
             <p class="modal-font font">Sua Pontuação</p>
             <p class="modal-font font" id="modal-points">Sua Pontuação</p>
           </div>
-          <div class="modal-footer modal-elements">
+          <div>
             <button id="restart-button" class="modal-button">Reiniciar</button>
           </div>
         </div>
       </div>
-
 </body>
 
 </html>
