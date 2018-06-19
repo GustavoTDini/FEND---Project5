@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Garden Crosser: Frogger</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="css/bootstrap.min.css"> -->
     <link rel="stylesheet" href="css/style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- <script src="js/bootstrap.min.js"></script> -->
 </head>
 <body>
   <!-- Game Start Screen -->
@@ -26,10 +26,11 @@
           </div>
           <div class="game-ui-data">
             <img class="game-logo ui-image" src="images/garden-crosser-logo.png" alt="Game Logo"/>
-            <p class ="game-ui-text-center font" id="stage">Fase 1</p>
+
             <div id="game-canvas"></div>
           </div>
           <div>
+            <p class ="game-ui-text-center font" id="stage">Fase 1</p>
             <div class="game-ui-data">
               <p class ="game-ui-text font">Pontuação:</p>
               <p class ="game-ui-text font" id="points">0</p>
@@ -47,10 +48,9 @@
     </div>
 
     <!-- Modal Start Game-->
-    <div class="modal fade" id="game-start" tabindex="-1" role="dialog">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content modal-elements game-elements">
-          <div class="modal-header modal-elements">
+    <div id="game-start" class="modal">
+        <div class="game-elements">
+          <div>
             <img class="game-logo ui-image" src="images/garden-crosser-logo.png" alt="Game Logo"/>
           </div>
           <div class="modal-body modal-elements">
@@ -63,16 +63,14 @@
               <button class="arrow-button" id="selector-right">&#8250;</button>
             </div>
           </div>
-          <div class="modal-footer modal-elements">
-            <button type="button" id="start-game" class="close modal-button" data-dismiss="modal">Começar</button>
+          <div>
+            <button id="start-game" class="modal-button">Começar</button>
           </div>
         </div>
       </div>
-    </div>
 
     <!-- Modal Game Over-->
-    <div class="modal fade" id="game-over" tabindex="-1" role="dialog">
-      <div class="modal-dialog" role="document">
+    <div id="game-over" class="modal">
         <div class="modal-content game-elements">
           <div class="modal-header modal-elements">
             <p class="modal-header-font font">GAME OVER</p>
@@ -83,15 +81,13 @@
             <p class="modal-font font">Tente Novamente!!!</p>
           </div>
           <div class="modal-footer modal-elements">
-            <button type="button" id="retry-button" class="close modal-button" data-dismiss="modal">Tente Novamente</button>
+            <button id="retry-button" class="modal-button">Tente Novamente</button>
           </div>
         </div>
       </div>
-    </div>
 
     <!-- Modal Finished-->
-    <div class="modal fade" id="game-finished" tabindex="-1" role="dialog">
-      <div class="modal-dialog" role="document">
+    <div id="game-finished" class="modal">
         <div class="modal-content game-elements">
           <div class="modal-header modal-elements">
             <p class="modal-header-font font">PARABÉNS</p>
@@ -103,11 +99,10 @@
             <p class="modal-font font" id="modal-points">Sua Pontuação</p>
           </div>
           <div class="modal-footer modal-elements">
-            <button type="button" id="restart-button" class="close modal-button" data-dismiss="modal">Reiniciar</button>
+            <button id="restart-button" class="modal-button">Reiniciar</button>
           </div>
         </div>
       </div>
-    </div>
 
 </body>
 

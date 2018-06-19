@@ -30,7 +30,7 @@ let lives = 5;
 let canvasText;
 let textColorChanger = 5;
 // gameMusic from http://soundimage.org/
-let gameMusic = new sound("sounds/strange-nature-looping.mp3");
+let gameMusic = new Audio("sounds/strange-nature-looping.mp3");
 // gamesounds from http://soundbible.com/
 let hitSound = new sound("sounds/punch.mp3");
 let gemSound = new sound("sounds/shooting-star.mp3");
@@ -232,6 +232,7 @@ class Player extends Objects{
               canvasText = new CanvasText(allGems[gem].x, allGems[gem].y, gemPoint);
               scoreUp(gemPoint);
               allGems.splice(gem,1);
+              gemSound.play();
             }
           }
 
@@ -257,6 +258,7 @@ class Player extends Objects{
             console.log(level);
             $("#stage").text("Fase " + (level+1));
           } else{
+            winSound.play();
             OpenGameFinishedModal();
           }
         }
@@ -406,6 +408,13 @@ document.addEventListener('keydown', function(e) {
   player.handleInputDown(allowedKeys[e.keyCode]);
 });
 
+gameMusic.addEventListener('ended', function() {
+  if(gamePlay){
+    this.currentTime = 0;
+    this.play();
+  }
+}, false);
+
 // função para embaralhar uma array, usei o algoritmo de Durstenfeld
 function shuffleArray(array){
   for (var i = array.length - 1; i > 0; i--) {
@@ -423,6 +432,7 @@ function playerHit(){
   player.y = PLAYER_START_Y;
   lives --;
   scoreUp(HIT_POINT);
+  hitSound.play();
   showLives();
 }
 

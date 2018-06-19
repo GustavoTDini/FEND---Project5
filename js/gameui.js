@@ -2,22 +2,32 @@
 $('.game-board').hide();
 
 let startButton = $("#start-button").click(function(){
+  console.log('start');
   OpenStartModal();
 });
 
 function OpenGameOverModal(){
-  $("#game-over").modal();
+  $("#game-over").show();
   gamePlay = false;
+  let retry = $("#retry-button").click(function(){
+    console.log('retry');
+    OpenStartModal();
+    //$("#game-over").hide();
+  });
 }
 
 function OpenGameFinishedModal(){
-  $("#game-finished").modal();
+  $("#game-finished").show()
   $("#modal-points").text(score);
   gamePlay = false;
+  let restart = $("#restart-button").onClick(function(){
+    $("#game-finished").hide();
+    OpenStartModal();
+  });
 }
 
 function OpenStartModal(){
-  $("#game-start").modal();
+  $("#game-start").show();
   playerSelection = 0;
   drawSelector(playerAvatars[playerSelection]);
   let leftSelector = $("#selector-left").click(function(){
@@ -39,6 +49,7 @@ function OpenStartModal(){
   });
 
   let startGameButton = $("#start-game").click(function(){
+    $("#game-start").hide();
     startGame();
   });
 }
@@ -78,6 +89,7 @@ function createGameElements(level){
 
 function gameOver(){
   if (lives == 0){
+    loseSound.play();
     OpenGameOverModal();
   }
 }
@@ -87,18 +99,24 @@ function startGame(){
   $('.start-screen').hide();
   $('.game-board').show();
   createGameElements(level);
+  gameMusic.play();
   player = new Player(PLAYER_START_X,PLAYER_START_Y, playerAvatars[playerSelection]);
 }
 
 // Função do temporizador
 let countUp = function(){
-  $("#time").text(time);
-  time ++;
+  if (gamePlay){
+    $("#time").text(time);
+    time ++;
+  }
 }
 
 // Função do Contador de Pontos
 function scoreUp(upScore){
   score += upScore;
+  if (score<0){
+    score = 0;
+  }
   $("#points").text(score);
 }
 
@@ -106,13 +124,8 @@ function scoreUp(upScore){
 function showLives(){
   $("#show-lives").empty();
   for (livesCount = 0; livesCount < lives; livesCount++){
-    $("#show-lives").append('<img src="images/heart.png" class="heart-image" alt="Game Logo"/>');
+    $("#show-lives").append('<img src="images/heart.png" class="heart" alt="Game Logo"/>');
   }
-}
-
-function gameRestart(){
-  $('.start-screen').show();
-  $('.game-board').hide();
 }
 
 function gameReset(){
