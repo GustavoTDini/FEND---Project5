@@ -25,15 +25,23 @@ let xSpeedInc = 0;
 let xMove = 0;
 let gemPoint;
 let time = 0;
+let passedTime;
 let score = 0;
 let lives = 5;
 let canvasText;
 let textColorChanger = 5;
+let allowedKeys = {
+  37: 'left',
+  38: 'up',
+  39: 'right',
+  40: 'down'
+};
 // gameMusic from http://soundimage.org/
 let gameMusic = new Audio("sounds/more-monkey-island-band.mp3");
 // gamesounds from http://soundbible.com/
 let hitSound = new Audio("sounds/punch.mp3");
 let gemSound = new Audio("sounds/shooting-star.mp3");
+let splash = new Audio("sounds/splash.mp3");
 let winSound = new Audio("sounds/fireworks.mp3");
 let loseSound = new Audio("sounds/sad-trombone.mp3");
 
@@ -65,7 +73,7 @@ let totalEnemies = [[0,0,1,1,2,2],
 
 
 
-// Classe representando um objeto qualquer do jogo, aplica as funções básicas de construção e renderização
+// Classe representando um objeto gráfico qualquer do jogo, aplica as funções básicas de construção e renderização
 class Objects {
   constructor(x, y, sprite){
     this.x = x;
@@ -79,6 +87,7 @@ class Objects {
 
 }
 
+// Classe representando um objeto de texto do canvas, para criação dos avisos de eventos
 class CanvasText {
   constructor(x, y, text, time){
     this.x = x;
@@ -103,11 +112,13 @@ class CanvasText {
   }
 
   update(dt){
+      // neste update é realizado 2 eventos, em um trocamos a cor do texto de acordo com o textColorChanger
       this.y = this.y - dt*10;
       this.time = this.time - 1;
       if (this.time % 10 == 0){
         textColorChanger --;
       }
+      // aqui definimos a destruição do elemento após um certo periodo de tempo
       if (this.time == 0 && gamePlay){
         canvasText = undefined;
       }
@@ -124,6 +135,8 @@ class Player extends Objects{
     this.sprite = sprite;
   }
 
+  // função que cria o movimento para cima e baixo, pulando de linha em linha, é testado tambem se há alguma pedra a frente
+  // para isso é guardado a posição inicial em pastThisY, e caso após o movimento houver uma colisão com uma pedra, o personagem volta a essa posição
   moveUpAndDown(direction){
     if (gamePlay){
       let pastThisY = this.y;
@@ -140,7 +153,9 @@ class Player extends Objects{
 
   }
 
+  // função para se ter a aceleração para o movimento para a direita
   moveRight(){
+    // incrementa a velocidade de acordo com xSpeedInc enuquanto estiver com o botão pressionado
     if(gamePlay){
       if (rightKey){
         xSpeedInc--;
@@ -148,9 +163,11 @@ class Player extends Objects{
         xSpeed--;
       }
 
+      // testa a velocidade maxima
       if (xSpeed < -MAX_SPEED)
       xSpeed = -MAX_SPEED;
 
+      // testa a posição do personagem, verificando que não saiu da tela
       if (this.x > (CANVAS_WIDTH-SQUARE_WIDTH)) {
         xMove = 0;
         xSpeed = 0;
@@ -160,6 +177,7 @@ class Player extends Objects{
         this.x = this.x + xMove;
       }
 
+      // testa a posição do personagem, verificando se não houve uma colisão com uma pedra, testando cada objeto do array allRocks
       for (let rock = 0; rock < allRocks.length; rock++){
         if (this.x < allRocks[rock].x + ROCK_WIDTH &&
           this.x + CHAR_WIDTH > allRocks[rock].x &&
@@ -176,6 +194,7 @@ class Player extends Objects{
 
     }
 
+    // função para se ter a aceleração para o movimento para a esquerda, com as mesma caracteristicas do movimento para a direita
     moveLeft(){
       if (gamePlay){
         if (leftKey) {
@@ -213,11 +232,13 @@ class Player extends Objects{
 
       update(dt){
 
+        // teste se o personagem pegou uma gema - isto é - colidiu com a mesma, testando cada objeto do array allGems
         for (let gem = 0; gem < allGems.length; gem++){
           if (this.x < allGems[gem].x + CHAR_WIDTH &&
             this.x + CHAR_WIDTH > allGems[gem].x &&
             this.y < allGems[gem].y + SQUARE_HEIGHT &&
             this.y + SQUARE_HEIGHT > allGems[gem].y){
+              // caso haja colisão, testa qual gema que é e associa os pontos da mesma
               switch (allGems[gem].sprite){
                 case 'images/gem-orange.png':
                 gemPoint = ORANGE_GEM_POINT;
@@ -229,17 +250,20 @@ class Player extends Objects{
                 gemPoint = GREEN_GEM_POINT;
                 break;
               }
+              // toca o som respectivo, cria um texto com o valor dos pontos, incrementa os pontos e retira essa gema do array
+              gemSound.play();
               canvasText = new CanvasText(allGems[gem].x, allGems[gem].y, gemPoint);
               scoreUp(gemPoint);
               allGems.splice(gem,1);
-              gemSound.play();
+
             }
           }
 
+        // testa os movimentos laterais,
         this.moveLeft();
-
         this.moveRight();
 
+        // testa se não ha nenhuma tecla, esquerda e direita sendo pressionada e cessa o movimento
         if (!rightKey && !leftKey){
           xMove = 0;
           xSpeed = 0;
@@ -248,50 +272,50 @@ class Player extends Objects{
           xMove -= xSpeed;
         }
 
+        // testa a posição y, caso tenha chegado à agua, incrementa a fase, e cria a nova fase,
+        // caso estaja na ultima fase, cria o modal de termino de jogo
         if (this.y > 550){
           if (level <4){
+            splash.play();
             scoreUp(PASS_STAGE_POINT*level);
             level++;
             this.x = PLAYER_START_X;
             this.y = PLAYER_START_Y;
             createGameElements(level);
-            console.log(level);
             $("#stage").text("Fase " + (level+1));
           } else if(level == 4){
-            console.log(level);
             level ++;
             winSound.play();
             OpenGameFinishedModal();
           }
         }
-
   }
 
+      // testa se os botões foram clicados
       handleInputUp(keys){
+        // no movimento vertical, cada clique movimenta de acordo com o moveUpAndDown, até o limite do canvas
         if (keys == 'up' && this.y > 0){
           this.moveUpAndDown(-1);
         }
-
         if (keys == 'down' && this.y < CANVAS_HEIGHT-(SQUARE_HEIGHT*3)){
           this.moveUpAndDown(1);
         }
-          if (keys == 'left')
-          leftKey = false;
 
-          if (keys == 'right')
-          rightKey = false;
-
-
-      }
-
-      handleInputDown(keys){
+        // no movimento lateral o clique significa o termino do pressionar da tecla, logo o movimento é encerrado
         if (keys == 'left')
-        leftKey = true;
-
+          leftKey = false;
         if (keys == 'right')
-        rightKey = true;
+          rightKey = false;
       }
 
+      // testa se os botões estão pressionados
+      handleInputDown(keys){
+        // no movimento lateral caso estejam pressionados o moviento é mantido
+        if (keys == 'left')
+          leftKey = true;
+        if (keys == 'right')
+          rightKey = true;
+      }
 }
 
 // Classe representando o inimigo
@@ -306,21 +330,25 @@ class Enemy extends Objects{
   }
 
   update(dt){
-  // Multiplies a movement by the dt parameter. This ensure the game runs at the same speed for all computers.
+  // enquanto o jogo estiver rodando, o movimento do inimigo e multiplicado por dt
   if (gamePlay){
     this.x = this.x + (this.move * dt);
   }
 
+  // testa a colisão do inimigo com o personagem
   if (this.x < player.x + CHAR_WIDTH &&
     this.x + ENEMY_WIDTH > player.x &&
     this.y < player.y + SQUARE_HEIGHT &&
     this.y + SQUARE_HEIGHT > player.y){
+      // testa o gameOver de acordo com a função
       gameOver();
+      // caso não seja valida a função abre a função playerHit
       if (lives>0){
         playerHit();
       }
     }
 
+    // testa a colisão do inimigo com as pedras, neste caso inverte a direção e o sprite do mesmo
     for (let rock = 0; rock < allRocks.length; rock++){
       if (this.x < allRocks[rock].x + ROCK_WIDTH &&
         this.x + ENEMY_WIDTH > allRocks[rock].x &&
@@ -350,6 +378,7 @@ class Enemy extends Objects{
         }
       }
 
+      // caso o inimigo atravesse a area do canvas, o recoloca em uma posição do outro lado
       if(this.x > CANVAS_WIDTH + 100) {
         this.x = -100;
       } else if (this.x < -110) {
@@ -360,6 +389,7 @@ class Enemy extends Objects{
 
 }
 
+// Classe representando uma pedra, é apenas um sprite, sem outras funções
 class Rock extends Objects{
 
   constructor(x, y, sprite) {
@@ -370,6 +400,7 @@ class Rock extends Objects{
   }
 }
 
+// Classe representando uma pedra, é apenas um sprite, sem outras funções
 class Gem extends Objects{
 
   constructor(x, y, sprite, arrayIndex, got) {
@@ -381,32 +412,17 @@ class Gem extends Objects{
 
 }
 
-// This listens for key presses and sends the keys to your
-// Player.handleInput() method. You don't need to modify this.
+// Listenter para clique das teclas
 document.addEventListener('keyup', function(e) {
-  var allowedKeys = {
-    13: 'enter',
-    32: 'space',
-    37: 'left',
-    38: 'up',
-    39: 'right',
-    40: 'down'
-  };
   player.handleInputUp(allowedKeys[e.keyCode]);
 });
 
+// Listenter para pressionar das teclas
 document.addEventListener('keydown', function(e) {
-  var allowedKeys = {
-    13: 'enter',
-    32: 'space',
-    37: 'left',
-    38: 'up',
-    39: 'right',
-    40: 'down'
-  };
   player.handleInputDown(allowedKeys[e.keyCode]);
 });
 
+// Listener para o temino da musica, caso esta se encerre e o jogo estiver valido, ela entra em loop
 gameMusic.addEventListener('ended', function() {
   if(gamePlay){
     this.currentTime = 0;
@@ -425,6 +441,8 @@ function shuffleArray(array){
   return array;
 }
 
+// função chamada quando o jogador é atingido por um inimigo, cria o aviso de HIT, toca o respectivo som
+//decrementa uma vida e pontos, retorna o personagem a posicão inicial,
 function playerHit(){
   canvasText = new CanvasText(player.x , player.y, "HIT!");
   player.x = PLAYER_START_X;
@@ -435,6 +453,8 @@ function playerHit(){
   showLives();
 }
 
+// função para criar o array dos blocos aonde se encontram as estradas, ela parte de um valor inicial else {
+// vai iterando em todos os blocos aonde podera ser colocado os inimigos, pedras e gemas
 function createRoadArray(){
   for (row = 0; row < 5; row++){
     for (column = 0; column <9; column ++){
@@ -446,11 +466,14 @@ function createRoadArray(){
   }
 }
 
+// função para criar um array de pedras para ser colocado no jogo, é criado a partir do valor de x e y
 function createRocks(rockX, rockY){
   rock = new Rock(rockX, rockY);
   allRocks.push(rock);
 }
 
+// função para criar um array de gemas para ser colocado no jogo, é criado a partir do valor de x e y
+// alem do tipo de gema
 function createGems(gemX, gemY, gemType){
   switch (gemType){
     case 0:
@@ -466,6 +489,8 @@ function createGems(gemX, gemY, gemType){
   allGems.push(gem);
 }
 
+// função para criar um array de inimigos para ser colocado no jogo, é criado a partir do valor de x e y
+// alem do tipo de inimigos
 function createEnemies(enemyX, enemyY, enemyType){
   let moveDirection = Math.floor(Math.random() * 2);
   if (moveDirection == 0){
@@ -501,4 +526,36 @@ function createEnemies(enemyX, enemyY, enemyType){
     break;
   }
   allEnemies.push(enemy);
+}
+
+
+// funçAo que desenha a tela a partir de cada inicio de jogo ou nivel
+function createGameElements(level){
+  // inicialmente zeramos todos os elementos
+  roadSquares = [];
+  allEnemies = [];
+  allRocks = [];
+  allGems = [];
+  // criamos o array da estrada e o randomizamos
+  createRoadArray();
+  roadSquares = shuffleArray(roadSquares);
+  // somente se o nivel for menor que 4 fazemos as iterações para cada elemento pegamos o 1o elemento do roadSquares (que estará randomizado)
+  // e colocamos cada elemento
+  if (level <= 4){
+    // primeiro as pedras - somente pegamos os valores de x e y e o numero definido pelo totalRocks
+    for (let rockIndex = 0; rockIndex < totalRocks[level]; rockIndex++){
+      createRocks(roadSquares[0][0], roadSquares[0][1]);
+      roadSquares.shift();
+    }
+    // depois as gemas - pegamos os valores de x e y e o tipo e numero definido pelo totalGems
+    for (let gemIndex = 0; gemIndex < totalGems[level].length; gemIndex++){
+      createGems(roadSquares[0][0], roadSquares[0][1], totalGems[level][gemIndex], gemIndex);
+      roadSquares.shift();
+    }
+    // finalmente os inimigos - pegamos os valores de x e y e o tipo e numero definido pelo totalEnemies
+    for (let enemyIndex = 0; enemyIndex < totalEnemies[level].length; enemyIndex++){
+      createEnemies(roadSquares[0][0], roadSquares[0][1], totalEnemies[level][enemyIndex]);
+      roadSquares.shift();
+    }
+  }
 }

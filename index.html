@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Garden Crosser: Frogger</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
   <!-- Game Start Screen -->
@@ -46,31 +48,54 @@
     </div>
 
     <!-- Modal Start Game-->
-    <div id="game-start" class="modal">
-        <div class="game-elements">
-          <div>
+    <div class="modal fade" id="game-start" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content game-elements">
+          <div class="modal-header">
             <img class="game-logo ui-image" src="images/garden-crosser-logo.png" alt="Game Logo"/>
           </div>
           <div class="modal-body modal-elements">
             <p class="modal-font font">
-              Regras do jogo
+              Regras do jogo:
+              O objetivo do jogo é levar seu personagem até a segurança do rio.
+              Evitando os inimigos <img class="modal-rule-images" src="images/enemy-bug.png" alt="enemy Bug"/>
+              Ultrapassando os obstaculos de Rochas <img class="modal-rule-images" src="images/rock.png" alt="rock"/>
+              E Coletando as Gemas <img class="modal-rule-images" src="images/gem-orange.png" alt="gem"/>para aumentar seus pontos.
+              Até completar todas as fases.
             </p>
+            <div class="modal-list-div">
+              <ul class="modal-list">
+                <li class="font">Inimigos:</li>
+                <li class="font"><img class="modal-rule-images" src="images/enemy-bug.png" alt="enemy Bug Red"/>: Mais Lento</li>
+                <li class="font"><img class="modal-rule-images" src="images/enemy-bug-2.png" alt="enemy Bug Black"/>: Mediano</li>
+                <li class="font"><img class="modal-rule-images" src="images/enemy-bug-3.png" alt="enemy Bug Green"/>: Mais Rápido</li>
+              </ul>
+              <ul class="modal-list">
+                <li class="font">Gemas:</li>
+                <li class="font"><img class="modal-rule-images" src="images/gem-orange.png" alt="orange Gem"/>: 10 Pontos</li>
+                <li class="font"><img class="modal-rule-images" src="images/gem-blue.png" alt="blue Gem"/>: 50 Pontos</li>
+                <li class="font"><img class="modal-rule-images" src="images/gem-green.png" alt="green Gem"/>: 100 Pontos</li>
+              </ul>
+            </div>
+            <p class="modal-font font">Selecione seu Personagem</p>
             <div id="modal-selector-canvas">
               <button class="arrow-button" id="selector-left">&#8249;</button>
               <canvas height="171" width="101" id="selector-canvas"></canvas>
               <button class="arrow-button" id="selector-right">&#8250;</button>
             </div>
           </div>
-          <div>
-            <button id="start-game" class="modal-button">Começar</button>
+          <div class="modal-footer">
+            <button type="button" id="start-game" class="btn btn-default modal-button" data-dismiss="modal">Começar</button>
           </div>
         </div>
       </div>
+    </div>
 
     <!-- Modal Game Over-->
-    <div id="game-over" class="modal">
-        <div class="game-elements">
-          <div>
+    <div class="modal fade" id="game-over" tabindex="-1" role="dialog"  data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content game-elements">
+          <div class="modal-header">
             <p class="modal-header-font font">GAME OVER</p>
           </div>
           <div class="modal-body modal-elements">
@@ -78,16 +103,18 @@
             <img src="images/sad-face.png" alt="sad face"/>
             <p class="modal-font font">Tente Novamente!!!</p>
           </div>
-          <div>
-            <button id="retry-button" class="modal-button">Tente Novamente</button>
+          <div class="modal-footer">
+            <button type="button" id="retry-button" class="btn btn-default modal-button" data-dismiss="modal">Tente Novamente</button>
           </div>
         </div>
       </div>
+    </div>
 
     <!-- Modal Finished-->
-    <div id="game-finished" class="modal">
-        <div class="game-elements">
-          <div>
+    <div class="modal fade" id="game-finished" tabindex="-1" role="dialog"  data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content game-elements">
+          <div class="modal-header">
             <p class="modal-header-font font">PARABÉNS</p>
           </div>
           <div class="modal-body modal-elements">
@@ -96,11 +123,12 @@
             <p class="modal-font font">Sua Pontuação</p>
             <p class="modal-font font" id="modal-points">Sua Pontuação</p>
           </div>
-          <div>
-            <button id="restart-button" class="modal-button">Reiniciar</button>
+          <div class="modal-footer">
+            <button type="button" id="restart-button" class="btn btn-default modal-button" data-dismiss="modal">Reiniciar</button>
           </div>
         </div>
       </div>
+    </div>
 </body>
 
 </html>
