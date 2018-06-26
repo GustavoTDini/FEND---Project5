@@ -8,19 +8,19 @@
 
 ## Instructions
 
-Regras do jogo: O objetivo do jogo é levar seu personagem até a segurança do rio. Evitando os inimigos ![enemy Bug](images/enemy-bug.png =100x) Ultrapassando os obstaculos de Rochas ![rock](images/rock.png =100x) E Coletando as Gemas ![gem](images/gem-orange.png =100x)para aumentar seus pontos. Até completar todas as fases.
+Regras do jogo: O objetivo do jogo é levar seu personagem até a segurança do rio. Evitando os inimigos ![enemy Bug](images/enemy-bug.png) Ultrapassando os obstaculos de Rochas ![rock](images/rock.png) E Coletando as Gemas ![gem](images/gem-orange.png)para aumentar seus pontos. Até completar todas as fases.
 
 <div class="modal-list-div">
 
 *   Inimigos:
-*   ![enemy Bug Red](images/enemy-bug.png =100x): Mais Lento
-*   ![enemy Bug Black](images/enemy-bug-2.png =100x): Mediano
-*   ![enemy Bug Green](images/enemy-bug-3.png =100x): Mais Rápido
+*   ![enemy Bug Red](images/enemy-bug.png): Mais Lento
+*   ![enemy Bug Black](images/enemy-bug-2.png): Mediano
+*   ![enemy Bug Green](images/enemy-bug-3.png): Mais Rápido
 
 *   Gemas:
-*   ![orange Gem](images/gem-orange.png =100x): 10 Pontos
-*   ![blue Gem](images/gem-blue.png =100x): 50 Pontos
-*   ![green Gem](images/gem-green.png =100x): 100 Pontos
+*   ![orange Gem](images/gem-orange.png): 10 Pontos
+*   ![blue Gem](images/gem-blue.png): 50 Pontos
+*   ![green Gem](images/gem-green.png): 100 Pontos
 
 </div>
 
